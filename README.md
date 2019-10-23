@@ -13,4 +13,4 @@
     3. git stash apply (to apply local changes)
     4. resolve conflicts if applicable
 
-3. When you are certain that your code works, push to your branch and make a pull request to merge your code to master
+  * When you are certain that your code works, push to your branch and make a pull request to merge your code to master
