@@ -1,9 +1,10 @@
 # Pattern_Project
 
-1. Branch structure
+## Branch structure
   * Each group member creates their own branch. 
   * Branch master only contains working version of the program
-2. Push/Pull Etiquette 
+
+## Push/Pull Etiquette 
   * Commit your code to your branch as often as possible
   * Always pull from master before you start coding. If you forget to pull, run the following commands and steps (git bash only):
 
