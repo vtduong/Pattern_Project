@@ -2,7 +2,7 @@
 
 ## Branch structure
   * Each group member creates their own branch. 
-  * Branch master only contains working version of the program
+  * Branch master contains only working version of the program
 
 ## Push/Pull Etiquette 
   * Commit your code to your branch as often as possible
