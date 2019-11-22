@@ -15,4 +15,5 @@
 
   * When you are certain that your code works, push to your branch and make a pull request to merge your code to master
 ## Link to Presentation slide
-    https://docs.google.com/presentation/d/1DSekTlVMnjyRjbtB13kXEHMZCmgbdM3tA37tYn7BxP0/edit?folder=0ABe63t_PU0PuUk9PVA#slide=id.p
+See link:
+https://docs.google.com/presentation/d/1DSekTlVMnjyRjbtB13kXEHMZCmgbdM3tA37tYn7BxP0/edit?folder=0ABe63t_PU0PuUk9PVA#slide=id.p
