@@ -15,7 +15,6 @@
 
   * When you are certain that your code works, push to your branch and make a pull request to merge your code to master
 
-
 ## Project Work:
   1. Determine Main Color of an image
   2. Image Segmentation
@@ -31,4 +30,3 @@
 ## Link to Presentation slide
 See link:
 https://docs.google.com/presentation/d/1DSekTlVMnjyRjbtB13kXEHMZCmgbdM3tA37tYn7BxP0/edit?usp=sharing
-
