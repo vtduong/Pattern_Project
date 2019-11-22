@@ -14,6 +14,8 @@
     4. resolve conflicts if applicable
 
   * When you are certain that your code works, push to your branch and make a pull request to merge your code to master
-## Link to Presentation slide
-See link:
+## Link to Presentation slide and 
+See link to presentation slide:
 https://docs.google.com/presentation/d/1DSekTlVMnjyRjbtB13kXEHMZCmgbdM3tA37tYn7BxP0/edit?usp=sharing
+See link to project report
+https://docs.google.com/document/d/1g4ow-ksi2oakumMdSAYmCrUk4J6APwZu-fNpoDPZ7ck/edit?usp=sharing
