@@ -18,6 +18,7 @@
 ## Project Work:
   1. Determine Main Color of an image
   2. Image Segmentation
+  
     * Calculate Data Cost & Smooth Cost (Van)
     * Fast alpha expansion (Edouard)
   3. Classification
