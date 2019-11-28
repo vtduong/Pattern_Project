@@ -73,27 +73,27 @@ def get_colour_bins(img, num_of_seps_per_channel=3):
     return mean_colour, pixel_indexes[:, 3].reshape(orig_shape[:2])
 
 
-def make_quantized_image(bins, reduced_image_bins, title="default"):
-    # if you want to show the reduced image according to the color bins
+def make_quantized_image(bins, image_bins, title="default"):
+    # if you want to show the image according to the color bins
     # use this. pass the output of get_colour_bins to it.
-    reduced_image = np.ones((*reduced_image_bins.shape, 3), dtype="uint8")
+    image = np.ones((*image_bins.shape, 3), dtype="uint8")
     for i in range(len(bins)):
-        reduced_image[reduced_image_bins[:] == i] = np.array(bins[i][1])
-    return reduced_image
+        image[image_bins[:] == i] = np.array(bins[i][1])
+    return image
 
 
-def smooth_image(bins, reduced_image_bins, threshhold=0.66):
-    print(reduced_image_bins.shape)
+def smooth_image(bins, image_bins, threshhold=0.66):
+    print(image_bins.shape)
     total = sum(np.array(bins)[:, 0])
     for i, c in enumerate(bins):
         # if the frequency of this color is low, filter it out to nearby colors
         if c[0] / total < threshhold:
 
             print(i, c[0] / total, c, len(bins))
-            indexes = np.argwhere(reduced_image_bins == i)
+            indexes = np.argwhere(image_bins == i)
             for j in indexes:
-                r = retarded_range_helper(j, reduced_image_bins.shape)
-                reduced_image_bins[j[0], j[1]] = np.bincount(
-                    reduced_image_bins[r[0][0] : r[0][1], r[1][0] : r[1][1]][0]
+                r = retarded_range_helper(j, image_bins.shape)
+                image_bins[j[0], j[1]] = np.bincount(
+                    image_bins[r[0][0] : r[0][1], r[1][0] : r[1][1]][0]
                 ).argmax()
-    return reduced_image_bins
+    return image_bins
