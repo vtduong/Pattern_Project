@@ -210,3 +210,8 @@ def makeThing(img):
         if len(mainColors) == 2:
             smooth_out(pixels)
             break
+    finalArray = [[None for y in range(iar.shape[1] - 1)] for x in range(iar.shape[0] - 1)]
+    for z in range(0, iar.shape[0] - 1):
+        for j in range(0, iar.shape[1] - 1):
+            finalArray[z][j] = mainColors.index(pixels[z][j].label)
+    return finalArray
