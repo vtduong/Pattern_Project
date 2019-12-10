@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import *
 from PIL import ImageTk, Image
-import os
+import constants
 
 class ScrolledFrame(tk.Frame):
     IMAGE_HEIGHT = 100
@@ -61,7 +61,7 @@ class ScrolledFrame(tk.Frame):
         self.current_x += self.IMAGE_WIDTH
         
         # the cursor goes to the head of a new line when it meets the end of the current line
-        if self.current_x > 1000:
+        if self.current_x >= self.inner_canvas_width:
             self.current_x = 0
             self.current_y += self.IMAGE_HEIGHT + self.LABEL_HEIGHT
             
@@ -76,30 +76,30 @@ class ScrolledFrame(tk.Frame):
     def start(self):
         self._root.mainloop()   
         
-        
+
+if __name__ == '__main__':
 # test
-window = ScrolledFrame(width=1025, height=500, title='result')
-window.pack(expand=True, fill='both')
-image_list = []
+    window = ScrolledFrame(width=850, height=500, title='result')
+    window.pack(expand=True, fill='both')
+    width = window.IMAGE_WIDTH
+    height = window.IMAGE_HEIGHT
+    image_list = []
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-path_to_dataset = current_dir + '/../dataset/example/original/'
+    for i in range(2):
+        img = ImageTk.PhotoImage(Image.open(constants.DATA_DIR + "1.jpg").resize((width, height), Image.ANTIALIAS))  
+        image_list.append(img)
+        window.insert_image(img, label = 'cow1')
+    
+        img = ImageTk.PhotoImage(Image.open(constants.DATA_DIR + "2.jpg").resize((width, height), Image.ANTIALIAS))
+        image_list.append(img)    
+        window.insert_image(img, label = 'cow2')
+    
+        img = ImageTk.PhotoImage(Image.open(constants.DATA_DIR + "3.jpg").resize((width, height), Image.ANTIALIAS))  
+        image_list.append(img)  
+        window.insert_image(img, label = ['cow3', 'grass'])
+        
+        img = ImageTk.PhotoImage(Image.open(constants.DATA_DIR + "4.jpg").resize((width, height), Image.ANTIALIAS))  
+        image_list.append(img)  
+        window.insert_image(img, label = ['cow4', 'grass'])
 
-for i in range(14):
-    img = ImageTk.PhotoImage(Image.open(path_to_dataset + "1.jpg").resize((150, 100), Image.ANTIALIAS))  
-    image_list.append(img)
-    window.insert_image(img, label = 'cow1')
-    
-    img = ImageTk.PhotoImage(Image.open(path_to_dataset + "2.jpg").resize((150, 100), Image.ANTIALIAS))
-    image_list.append(img)    
-    window.insert_image(img, label = 'cow2')
-    
-    img = ImageTk.PhotoImage(Image.open(path_to_dataset + "3.jpg").resize((150, 100), Image.ANTIALIAS))  
-    image_list.append(img)  
-    window.insert_image(img, label = ['cow3', 'grass'])
-    
-    img = ImageTk.PhotoImage(Image.open(path_to_dataset + "4.jpg").resize((150, 100), Image.ANTIALIAS))  
-    image_list.append(img)  
-    window.insert_image(img, label = ['cow4', 'grass'])
-
-window.start()
+    window.start()
