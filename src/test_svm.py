@@ -28,7 +28,8 @@ def main():
     directory = constants.TEST_DIR
     labels_dir = constants.TRAIN_DIR
     label_list = os.listdir(labels_dir)
-    svm = pickle.load(open("trained_model.p", "wb"))
+    with open("trained_model.p", "rb") as pickle_file:
+        svm = pickle.load(pickle_file)
     X = []
     y = []
     for path in os.listdir(directory):
@@ -37,6 +38,7 @@ def main():
         y.append([int(l in classes) for l in label_list])
     y_preds = svm.predict(X)
     print(y, y_preds)
+    measure_performance(y_preds, y)
 
 
 #
@@ -56,7 +58,7 @@ def main():
 #        feature_list = []
 #        for image in image_list:
 #            img = plt.imread(image)
-#            print("processing segmentation for %s..." % image)
+# results            print("processing segmentation for %s..." % image)
 #            segment_image = image_segment(img)
 #            image_features = extract_feature(segment_image, channel=1)
 #            feature_list.append(image_features)
