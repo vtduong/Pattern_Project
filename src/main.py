@@ -73,7 +73,7 @@ if __name__ == '__main__':
                 feature_label[label_list.index(segment[1])].append(segment[0])
             
     for i in range(len(label_list)):
-        X_list.append(np.vstack(feature_label[i]))
+        X_list.append(np.array(feature_label[i]).reshape((np.array(feature_label[i]).shape[0],np.array(feature_label[i]).shape[1]*np.array(feature_label[i]).shape[2])))
 
     print("start to train SVM...")
     for i in range(len(label_list)):
@@ -117,8 +117,9 @@ if __name__ == '__main__':
         print("start to predict %s" % image)
         y_pred = ""
         for segment in X_test:
-            y_pred += " - " + svm.predict(np.array(X_test).reshape(1,-1))
-        window.insert_image(img, label = y_pred)
+            y_pred =  svm.predict(np.array(segment).reshape(1, 3*3))
+
+            window.insert_image(img, label=y_pred)
         
     
     window.start()

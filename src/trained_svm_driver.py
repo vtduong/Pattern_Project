@@ -15,24 +15,19 @@ def image_segment(image):
     #image_slic = seg.slic(image,n_segments=1000)
     #seg_image = color.label2rgb(image_slic, image, kind='avg')
     #return seg_image
-    return  np.array(segmentation_algorithms.makeThing(image))
+    return  segmentation_algorithms.auto_segment(image)
 
 def extract_feature(img, channel=3):
-    copy = img.reshape(img.shape[0]*img.shape[1],channel)
     feature_list = []
-    
-    for i in range(channel):
-        feature_list.append(np.mean(copy[:,i]))
-        feature_list.append(np.var(copy[:,i]))
-        feature_list.append(scipy.stats.skew(copy[:,i]))
-        feature_list.append(scipy.stats.moment(copy[:,i]))
-        
+    for seg in img:
+        feature_list.append(seg)
+
     return np.array(feature_list)
 
 if __name__ == '__main__':
     svm = pickle.load(open('trained_model.p', "rb" ))
     
-    directory = constants.TEST_DIR + '../tmp/'
+    directory = constants.TEST_DIR
     image_list = [directory + img for img in os.listdir(directory)]
         
         
@@ -48,12 +43,15 @@ if __name__ == '__main__':
         img = ImageTk.PhotoImage(Image.open(image).resize((width, height), Image.ANTIALIAS)) 
         img_list.append(img)
         print("processing segmentation for %s" % image)
-        X_test = extract_feature(image_segment(plt.imread(image)), channel = 1)
-        X_test = np.array(X_test).reshape(1,-1)
-        #X_test = scaler.transform(X_test)
+        X_test = extract_feature(image_segment(plt.imread(image)), channel=1)
+        # X_test = np.array(X_test).reshape(1,-1)
+        # X_test = scaler.transform(X_test)
         print("start to predict %s" % image)
-        y_pred = svm.predict(np.array(X_test).reshape(1,-1))
-        window.insert_image(img, label = y_pred)
+        y_pred = ""
+        for segment in X_test:
+            y_pred =  svm.predict(np.array(segment).reshape(1, 3*3))
+
+            window.insert_image(img, label=y_pred)
         
     
     window.start()

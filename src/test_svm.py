@@ -32,11 +32,11 @@ def measure_performance(y_pred, y_test):
 
 
 def predict(X, svm):
-    X_test = extract_feature(image_segment(plt.imread(X)), channel=1)
-    print("start to predict %s" % X)
+    X_test = extract_feature(image_segment(X), channel=1)
+    #print("start to predict %s" % X)
     y_pred = ""
     for segment in X_test:
-        y_pred += " - " + svm.predict(np.array(X_test).reshape(1, -1))
+        y_pred = svm.predict(np.array(segment).reshape(1, 3 * 3))
     return y_pred
 
 
