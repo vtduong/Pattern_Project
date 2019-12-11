@@ -1,8 +1,11 @@
-from PIL import Image
 import numpy as np
 from matplotlib import pyplot as plt
 import math
 import multiprocessing as mp
+from skimage import data
+from skimage import io
+from scipy import ndimage
+
 class Pixel:
     def __init__(self, color):
         self.color = color
@@ -155,10 +158,10 @@ def get_colors(img):
 
 
 def makeThing(img):
-    i = img
+    i = io.imread(img)
     iar = np.asarray(i)
-    #plt.imshow(np.array(iar), interpolation='none')
-    #plt.show()
+    plt.imshow(np.array(iar), interpolation='none')
+    plt.show()
     mainColors = get_colors(iar)
     pixels = [ [ None for y in range(iar.shape[1] - 1) ] for x in range(iar.shape[0] - 1) ]
     for z in range(0, iar.shape[0] - 1):
@@ -169,8 +172,24 @@ def makeThing(img):
     for z in range(0, iar.shape[0] - 1):
         for j in range(0, iar.shape[1] - 1):
             nPixel[z][j] = pixels[z][j].label
-    #plt.imshow(np.array(nPixel), interpolation='none')
-    #plt.show()
+    plt.imshow(np.array(nPixel), interpolation='none')
+    plt.show()
+    for mainColor in mainColors:
+        bPixel = [[None for y in range(iar.shape[1] - 1)] for x in range(iar.shape[0] - 1)]
+        for z in range(0, iar.shape[0] - 1):
+            for j in range(0, iar.shape[1] - 1):
+                if set(nPixel[z][j]) == set(mainColor):
+                    bPixel[z][j] = 1
+                else:
+                    bPixel[z][j] = 0
+        bPixel = ndimage.binary_closing(bPixel)
+        for z in range(0, iar.shape[0] - 1):
+            for j in range(0, iar.shape[1] - 1):
+                if bPixel[z][j] == 1:
+                    nPixel[z][j] = mainColor
+                    pixels[z][j].label = mainColor
+    plt.imshow(np.array(nPixel), interpolation='none')
+    plt.show()
     redo = True
     times = 0
     while redo and times < 6:
@@ -185,7 +204,7 @@ def makeThing(img):
         redo = False
         for mainColor in mainColors:
             change = fast_alpha_expansion(pixels, clusters, mainColor, mainColors, clusterChanges)
-            #print(change)
+            print(change)
             if change[0]:
                 redo = True
                 clusterChanges = change[1]
@@ -204,16 +223,89 @@ def makeThing(img):
         for z in range(0, iar.shape[0] - 1):
             for j in range(0, iar.shape[1] - 1):
                 nPixel[z][j] = pixels[z][j].label
-        
-        #plt.imshow(np.array(nPixel), interpolation='none')
-        #plt.show()
-        ##print("CHANGE")
+        print("CHANGE")
+        for mainColor in mainColors:
+            bPixel = [[None for y in range(iar.shape[1] - 1)] for x in range(iar.shape[0] - 1)]
+            for z in range(0, iar.shape[0] - 1):
+                for j in range(0, iar.shape[1] - 1):
+                    if set(nPixel[z][j]) == set(mainColor):
+                        bPixel[z][j] = 1
+                    else:
+                        bPixel[z][j] = 0
+            bPixel = ndimage.binary_closing(bPixel)
+            for z in range(0, iar.shape[0] - 1):
+                for j in range(0, iar.shape[1] - 1):
+                    if bPixel[z][j] == 1:
+                        nPixel[z][j] = mainColor
+                        pixels[z][j].label = mainColor
+        plt.imshow(np.array(nPixel), interpolation='none')
+        plt.show()
         if len(mainColors) == 2:
             smooth_out(pixels)
             break
-        
+    for i in clusters:
+        nPixel = [[None for y in range(iar.shape[1] - 1)] for x in range(iar.shape[0] - 1)]
+        for z in range(0, iar.shape[0] - 1):
+            for j in range(0, iar.shape[1] - 1):
+                if set(pixels[i[0][0]][i[0][1]].label) == set(pixels[z][j].label):
+                    nPixel[z][j] = pixels[z][j].label
+                else:
+                    nPixel[z][j] = [0,0,0]
+        plt.imshow(np.array(nPixel), interpolation='none')
+        plt.show()
+
+
     finalArray = [[None for y in range(iar.shape[1] - 1)] for x in range(iar.shape[0] - 1)]
     for z in range(0, iar.shape[0] - 1):
         for j in range(0, iar.shape[1] - 1):
             finalArray[z][j] = mainColors.index(pixels[z][j].label)
-    return finalArray
+    sums = []
+    for i in range(len(mainColors)):
+        sums.append([[0,0,0],0])
+    for z in range(0, iar.shape[0] - 1):
+        for j in range(0, iar.shape[1] - 1):
+            index = finalArray[z][j]
+            sums[index][0][0] += pixels[z][j].color[0]
+            sums[index][0][1] += pixels[z][j].color[1]
+            sums[index][0][2] += pixels[z][j].color[2]
+            sums[index][1] += 1
+    means = []
+    for i in range(len(sums)):
+        if sums[i][1] != 0:
+            means.append([sums[i][0][0]/sums[i][1],sums[i][0][1]/sums[i][1],sums[i][0][2]/sums[i][1]])
+        else:
+            means.append([-1,-1,-1])
+
+    sumVariance = []
+    sumSkew = []
+    for i in range(len(mainColors)):
+        sumVariance.append([0, 0, 0])
+        sumSkew.append([0, 0, 0])
+    for z in range(0, iar.shape[0] - 1):
+        for j in range(0, iar.shape[1] - 1):
+            index = finalArray[z][j]
+            sumVariance[index][0] += pow(pixels[z][j].color[0] - means[index][0],2)
+            sumVariance[index][1] += pow(pixels[z][j].color[1] - means[index][1],2)
+            sumVariance[index][2] += pow(pixels[z][j].color[2] - means[index][2],2)
+            sumSkew[index][0] += pow(pixels[z][j].color[0] - means[index][0], 3)
+            sumSkew[index][1] += pow(pixels[z][j].color[1] - means[index][1], 3)
+            sumSkew[index][2] += pow(pixels[z][j].color[2] - means[index][2], 3)
+
+    variance = []
+    skew = []
+    for i in range(len(sumVariance)):
+        if sums[i][1] != 0:
+            variance.append([pow(sumVariance[i][0] / sums[i][1],0.5), pow(sumVariance[i][1] / sums[i][1],0.5), pow(sumVariance[i][2] / sums[i][1],0.5)])
+            if sumSkew[i][0] < 0 or sumSkew[i][1] < 0 or sumSkew[i][2] < 0:
+                skew.append([pow(abs(sumSkew[i][0]) / sums[i][1], 1 / 3), pow(abs(sumSkew[i][0]) / sums[i][1], 1 / 3), pow(abs(sumSkew[i][0]) / sums[i][1], 1 / 3)])
+            else:
+                skew.append([pow(sumSkew[i][0] / sums[i][1],1/3), pow(sumSkew[i][1] / sums[i][1],1/3), pow(sumSkew[i][2] / sums[i][1],1/3)])
+        else:
+            variance.append([-1, -1, -1])
+            skew.append([-1, -1, -1])
+
+    segmentInfo = []
+    for i in range(len(mainColors)):
+        if sums[i][1] != 0:
+            segmentInfo.append([means[i], variance[i], skew[i]])
+    return segmentInfo
