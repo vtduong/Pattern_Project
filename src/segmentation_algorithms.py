@@ -243,6 +243,7 @@ def makeThing(img):
         if len(mainColors) == 2:
             smooth_out(pixels)
             break
+    segmentInfo = []
     for i in clusters:
         nPixel = [[None for y in range(iar.shape[1] - 1)] for x in range(iar.shape[0] - 1)]
         for z in range(0, iar.shape[0] - 1):
@@ -251,61 +252,6 @@ def makeThing(img):
                     nPixel[z][j] = pixels[z][j].label
                 else:
                     nPixel[z][j] = [0,0,0]
-        plt.imshow(np.array(nPixel), interpolation='none')
-        plt.show()
+        segmentInfo.append(nPixel)
 
-
-    finalArray = [[None for y in range(iar.shape[1] - 1)] for x in range(iar.shape[0] - 1)]
-    for z in range(0, iar.shape[0] - 1):
-        for j in range(0, iar.shape[1] - 1):
-            finalArray[z][j] = mainColors.index(pixels[z][j].label)
-    sums = []
-    for i in range(len(mainColors)):
-        sums.append([[0,0,0],0])
-    for z in range(0, iar.shape[0] - 1):
-        for j in range(0, iar.shape[1] - 1):
-            index = finalArray[z][j]
-            sums[index][0][0] += pixels[z][j].color[0]
-            sums[index][0][1] += pixels[z][j].color[1]
-            sums[index][0][2] += pixels[z][j].color[2]
-            sums[index][1] += 1
-    means = []
-    for i in range(len(sums)):
-        if sums[i][1] != 0:
-            means.append([sums[i][0][0]/sums[i][1],sums[i][0][1]/sums[i][1],sums[i][0][2]/sums[i][1]])
-        else:
-            means.append([-1,-1,-1])
-
-    sumVariance = []
-    sumSkew = []
-    for i in range(len(mainColors)):
-        sumVariance.append([0, 0, 0])
-        sumSkew.append([0, 0, 0])
-    for z in range(0, iar.shape[0] - 1):
-        for j in range(0, iar.shape[1] - 1):
-            index = finalArray[z][j]
-            sumVariance[index][0] += pow(pixels[z][j].color[0] - means[index][0],2)
-            sumVariance[index][1] += pow(pixels[z][j].color[1] - means[index][1],2)
-            sumVariance[index][2] += pow(pixels[z][j].color[2] - means[index][2],2)
-            sumSkew[index][0] += pow(pixels[z][j].color[0] - means[index][0], 3)
-            sumSkew[index][1] += pow(pixels[z][j].color[1] - means[index][1], 3)
-            sumSkew[index][2] += pow(pixels[z][j].color[2] - means[index][2], 3)
-
-    variance = []
-    skew = []
-    for i in range(len(sumVariance)):
-        if sums[i][1] != 0:
-            variance.append([pow(sumVariance[i][0] / sums[i][1],0.5), pow(sumVariance[i][1] / sums[i][1],0.5), pow(sumVariance[i][2] / sums[i][1],0.5)])
-            if sumSkew[i][0] < 0 or sumSkew[i][1] < 0 or sumSkew[i][2] < 0:
-                skew.append([pow(abs(sumSkew[i][0]) / sums[i][1], 1 / 3), pow(abs(sumSkew[i][0]) / sums[i][1], 1 / 3), pow(abs(sumSkew[i][0]) / sums[i][1], 1 / 3)])
-            else:
-                skew.append([pow(sumSkew[i][0] / sums[i][1],1/3), pow(sumSkew[i][1] / sums[i][1],1/3), pow(sumSkew[i][2] / sums[i][1],1/3)])
-        else:
-            variance.append([-1, -1, -1])
-            skew.append([-1, -1, -1])
-
-    segmentInfo = []
-    for i in range(len(mainColors)):
-        if sums[i][1] != 0:
-            segmentInfo.append([means[i], variance[i], skew[i]])
     return segmentInfo
