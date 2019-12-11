@@ -158,8 +158,7 @@ def get_colors(img):
 
 
 def makeThing(img):
-    i = io.imread(img)
-    iar = np.asarray(i)
+    iar = np.asarray(img)
     plt.imshow(np.array(iar), interpolation='none')
     plt.show()
     mainColors = get_colors(iar)
@@ -249,7 +248,7 @@ def makeThing(img):
         for z in range(0, iar.shape[0] - 1):
             for j in range(0, iar.shape[1] - 1):
                 if set(pixels[i[0][0]][i[0][1]].label) == set(pixels[z][j].label):
-                    nPixel[z][j] = pixels[z][j].label
+                    nPixel[z][j] = pixels[z][j].color
                 else:
                     nPixel[z][j] = [0,0,0]
         segmentInfo.append(nPixel)
