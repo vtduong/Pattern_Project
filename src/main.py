@@ -102,10 +102,12 @@ if __name__ == '__main__':
         img_list.append(img)
         print("processing segmentation for %s" % image)
         X_test = extract_feature(image_segment(plt.imread(image)), channel = 1)
-        X_test = np.array(X_test).reshape(1,-1)
+        #X_test = np.array(X_test).reshape(1,-1)
         #X_test = scaler.transform(X_test)
         print("start to predict %s" % image)
-        y_pred = svm.predict(np.array(X_test).reshape(1,-1))
+        y_pred = ""
+        for segment in X_test:
+            y_pred += " - " + svm.predict(np.array(X_test).reshape(1,-1))
         window.insert_image(img, label = y_pred)
         
     
