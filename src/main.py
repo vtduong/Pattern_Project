@@ -50,7 +50,6 @@ if __name__ == '__main__':
             segment_image = image_segment(img)
             image_features = extract_feature(segment_image, channel = 1)
             feature_list.append(image_features)
-            print(feature_list)
             
         X_list.append(np.vstack(feature_list))
 
