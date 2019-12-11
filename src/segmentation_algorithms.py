@@ -155,10 +155,10 @@ def get_colors(img):
 
 
 def makeThing(img):
-    i = Image.open(img)
+    i = img
     iar = np.asarray(i)
-    plt.imshow(np.array(iar), interpolation='none')
-    plt.show()
+    #plt.imshow(np.array(iar), interpolation='none')
+    #plt.show()
     mainColors = get_colors(iar)
     pixels = [ [ None for y in range(iar.shape[1] - 1) ] for x in range(iar.shape[0] - 1) ]
     for z in range(0, iar.shape[0] - 1):
@@ -169,8 +169,8 @@ def makeThing(img):
     for z in range(0, iar.shape[0] - 1):
         for j in range(0, iar.shape[1] - 1):
             nPixel[z][j] = pixels[z][j].label
-    plt.imshow(np.array(nPixel), interpolation='none')
-    plt.show()
+    #plt.imshow(np.array(nPixel), interpolation='none')
+    #plt.show()
     redo = True
     times = 0
     while redo and times < 6:
@@ -185,7 +185,7 @@ def makeThing(img):
         redo = False
         for mainColor in mainColors:
             change = fast_alpha_expansion(pixels, clusters, mainColor, mainColors, clusterChanges)
-            print(change)
+            #print(change)
             if change[0]:
                 redo = True
                 clusterChanges = change[1]
@@ -204,12 +204,14 @@ def makeThing(img):
         for z in range(0, iar.shape[0] - 1):
             for j in range(0, iar.shape[1] - 1):
                 nPixel[z][j] = pixels[z][j].label
-        plt.imshow(np.array(nPixel), interpolation='none')
-        plt.show()
-        print("CHANGE")
+        
+        #plt.imshow(np.array(nPixel), interpolation='none')
+        #plt.show()
+        ##print("CHANGE")
         if len(mainColors) == 2:
             smooth_out(pixels)
             break
+        
     finalArray = [[None for y in range(iar.shape[1] - 1)] for x in range(iar.shape[0] - 1)]
     for z in range(0, iar.shape[0] - 1):
         for j in range(0, iar.shape[1] - 1):
