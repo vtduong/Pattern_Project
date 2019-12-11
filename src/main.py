@@ -20,18 +20,27 @@ def image_segment(image):
     return segmentation_algorithms.auto_segment(image)
 
 
-def extract_feature(img, channel=3):
+def extract_feature_training(img, channel=3):
     feature_list = []
     global x
     global inp
     for seg in img:
+        #label = input("Enter this training segment's classifier (enter 'None' if not semantically significant): ")
         label = inp[x]
         x += 1
         if label != "None":
             feature_list.append([seg, label])
 
     return np.array(feature_list)
-    
+
+
+def extract_feature(img, channel=3):
+    feature_list = []
+    for seg in img:
+        feature_list.append([seg])
+
+    return np.array(feature_list)
+
 
 if __name__ == '__main__':
     directory = constants.TRAIN_DIR
@@ -59,7 +68,7 @@ if __name__ == '__main__':
             img = plt.imread(image)
             print("processing segmentation for %s..." % image)
             segment_image = image_segment(img)
-            image_features = extract_feature(segment_image, channel = 1)
+            image_features = extract_feature_training(segment_image, channel = 1)
             for segment in image_features:
                 feature_label[label_list.index(segment[1])].append(segment[0])
             
@@ -103,10 +112,12 @@ if __name__ == '__main__':
         img_list.append(img)
         print("processing segmentation for %s" % image)
         X_test = extract_feature(image_segment(plt.imread(image)), channel = 1)
-        X_test = np.array(X_test).reshape(1,-1)
+        #X_test = np.array(X_test).reshape(1,-1)
         #X_test = scaler.transform(X_test)
         print("start to predict %s" % image)
-        y_pred = svm.predict(np.array(X_test).reshape(1,-1))
+        y_pred = ""
+        for segment in X_test:
+            y_pred += " - " + svm.predict(np.array(X_test).reshape(1,-1))
         window.insert_image(img, label = y_pred)
         
     
