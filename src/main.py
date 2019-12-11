@@ -16,17 +16,13 @@ def image_segment(image):
     #image_slic = seg.slic(image,n_segments=1000)
     #seg_image = color.label2rgb(image_slic, image, kind='avg')
     #return seg_image
-    return  np.array(segmentation_algorithms.makeThing(image))
+    return  segmentation_algorithms.makeThing(image)
 
 def extract_feature(img, channel=3):
-    copy = img.reshape(img.shape[0]*img.shape[1],channel)
     feature_list = []
-    
-    for i in range(channel):
-        feature_list.append(np.mean(copy[:,i]))
-        feature_list.append(np.var(copy[:,i]))
-        feature_list.append(scipy.stats.skew(copy[:,i]))
-        feature_list.append(scipy.stats.moment(copy[:,i]))
+    for seg in img:
+        feature_list.append([seg])
+
         
     return np.array(feature_list)
     
