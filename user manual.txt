@@ -1,0 +1,39 @@
+Libraries requirement:
+
+Python: 3.8.0+
+required python packages:
+
+pandas
+numpy
+scipy
+scikit
+cv2 (opencv)
+PIL
+matplotlib
+
+
+On linux, it is recommended that you install these with your respective package manager. For instance, you can install them on arch linux with:
+sudo pacman -Syu python-numpy python-pandas python-scipy python-scikit-learn opencv hdf5 vtk
+
+Otherwise, you can use the python package manager pip:
+pip install --user numpy pandas scipy scikit-learn opencv-python
+
+----------------------------------------------
+
+Running instruction:
+
+simply run the src/main.py
+
+
+----------------------------------------------
+
+Data sets:
+
+We have a training data set and a testing data set.
+
+Customized training data sets should be placed in the 'dataset/example/train/' directory and every images with same class
+should be put in a subdirectory named by their class. For example,
+every pictures belong to the "cow" class should be placed in the
+'dataset/example/train/cow/' directory.
+
+Testing data sets should be placed in the 'dataset/example/test/' directory.
