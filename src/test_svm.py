@@ -8,9 +8,16 @@ from sklearn.metrics import (
     multilabel_confusion_matrix,
 )
 import matplotlib.pyplot as plt
+from sklearn.svm import SVC
+from multilabel_svm import MultiLabelSVM
+from main import extract_feature, image_segment
+import numpy as np
 
+# from sklearn.svm._classes import SVC
 
 # measure performance
+
+
 def measure_performance(y_pred, y_test):
     print("Accuracy: {0:.3f}".format(accuracy_score(y_test, y_pred)), "\n")
     print(
@@ -24,20 +31,28 @@ def measure_performance(y_pred, y_test):
     print(multilabel_confusion_matrix(y_test, y_pred), "\n")
 
 
+def predict(X, svm):
+    X_test = extract_feature(image_segment(plt.imread(X)), channel=1)
+    print("start to predict %s" % X)
+    y_pred = ""
+    for segment in X_test:
+        y_pred += " - " + svm.predict(np.array(X_test).reshape(1, -1))
+    return y_pred
+
+
 def main():
     directory = constants.TEST_DIR
     labels_dir = constants.TRAIN_DIR
     label_list = os.listdir(labels_dir)
-    with open("trained_model.p", "rb") as pickle_file:
-        svm = pickle.load(pickle_file)
+    svm = pickle.load(open("trained_model.p", "rb"))
     X = []
     y = []
     for path in os.listdir(directory):
         X.append(plt.imread(directory + path))
         classes = path.split("_")[:-1]
         y.append([int(l in classes) for l in label_list])
-    y_preds = svm.predict(X)
-    print(y, y_preds)
+    y_preds = [predict(x, svm) for x in X]
+    print(y_preds, y)
     measure_performance(y_preds, y)
 
 
